@@ -22,16 +22,16 @@ class ViewController: UIViewController {
     var themeDictionary : Dictionary<String, Array<String>>
     
     var themeChosen = "animalFace"
+    
+    var emojiChoices : Array<String>
   
     required init?(coder aDecoder: NSCoder) {
         themeDictionary = [String:[String]]()
         themeDictionary["holloween"] = holloweenTheme
         themeDictionary["animalFace"] = animalFaceTheme
+        emojiChoices = themeDictionary[themeChosen]!
         super.init(coder: aDecoder)
     }
-
-
-
     
     lazy var game = Concentration(numberOfPairsOfCards: (cardButtons.count + 1) / 2)
     var flipCount = 0 {
@@ -53,7 +53,6 @@ class ViewController: UIViewController {
         print("New Game!!")
         flipCount = 0
         game.newGame(numberOfPairsOfCards: (cardButtons.count + 1) / 2)
-        // initialiseEmoji()
         updateViewFromModel()
     }
 
@@ -77,8 +76,6 @@ class ViewController: UIViewController {
         
     }
     
-
-    
     func updateViewFromModel() {
         for index in cardButtons.indices {
             let button = cardButtons[index]
@@ -98,11 +95,12 @@ class ViewController: UIViewController {
     
 
     func emoji(for card: Card) -> String {
-        var emojiChoices = themeDictionary[themeChosen]!
         if emoji[card.identifier] == nil, emojiChoices.count > 0 {
             let randomIndex = Int(arc4random_uniform(UInt32(emojiChoices.count)))
             emoji[card.identifier] = emojiChoices.remove(at: randomIndex)
+            
         }
+        print("\(card.identifier) : \(emoji[card.identifier]!)")
         return emoji[card.identifier] ?? "?"
     }
     
@@ -118,9 +116,7 @@ class ViewController: UIViewController {
             button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         }
         flipCount += 1
-        
-        
-        
+
     }
 }
 
