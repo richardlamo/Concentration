@@ -9,27 +9,30 @@
 import UIKit
 
 class ViewController: UIViewController {
-
-    var holloweenTheme = [
-        "👻","🎃","😈","👹","☠️","🧟‍♂️"
+    
+    var allThemes = [
+        ["👻","🎃","😈","👹","☠️","🧟‍♂️"],
+        ["🦆","🦅","🦉","🐝","🦇","🕊"],
+        ["🐘","🦍","🐫","🦒","🐎","🦌"],
+        ["🍄","🌷","💐","🌵","🎄","🎋"],
+        ["🍔","🌭","🌮","🍕","🍣","🍱"],
+        ["🐶","🐯","🐷","🦁","🐸","🐼"]
     ]
 
-    var animalFaceTheme = [
-        "🐶","🐯","🐷","🦁","🐸","🐼"
-    ]
 
     
-    var themeDictionary : Dictionary<String, Array<String>>
+//    var themeDictionary : Dictionary<String, Array<String>>
     
     var themeChosen = "animalFace"
     
     var emojiChoices : Array<String>
   
+    var emoji = Dictionary<Int,String>()
+
     required init?(coder aDecoder: NSCoder) {
-        themeDictionary = [String:[String]]()
-        themeDictionary["holloween"] = holloweenTheme
-        themeDictionary["animalFace"] = animalFaceTheme
-        emojiChoices = themeDictionary[themeChosen]!
+        let randomIndex = Int(arc4random_uniform(UInt32(allThemes.count)))
+        
+        emojiChoices = allThemes[randomIndex]
         super.init(coder: aDecoder)
     }
     
@@ -43,19 +46,23 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        themeDictionary = [String:[String]]()
-        themeDictionary["holloween"] = holloweenTheme
-        themeDictionary["animalFace"] = animalFaceTheme
     }
     
     
     @IBAction func newGame(_ sender: UIButton) {
         print("New Game!!")
         flipCount = 0
+        let randomIndex = Int(arc4random_uniform(UInt32(allThemes.count)))
+        emojiChoices = allThemes[randomIndex]
+        emoji = Dictionary<Int,String>()
+
         game.newGame(numberOfPairsOfCards: (cardButtons.count + 1) / 2)
         updateViewFromModel()
     }
-
+    
+    
+    @IBOutlet weak var scoreLabel: UILabel!
+    
     @IBOutlet weak var flipCountLabel: UILabel!
     
     @IBOutlet var cardButtons: [UIButton]!
@@ -77,6 +84,8 @@ class ViewController: UIViewController {
     }
     
     func updateViewFromModel() {
+        scoreLabel.text = "Score: \(game.score)"
+        
         for index in cardButtons.indices {
             let button = cardButtons[index]
             let card = game.cards[index]
@@ -91,7 +100,6 @@ class ViewController: UIViewController {
     }
 
     
-    var emoji = Dictionary<Int,String>()
     
 
     func emoji(for card: Card) -> String {
