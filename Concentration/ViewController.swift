@@ -90,10 +90,10 @@ class ViewController: UIViewController {
             let button = cardButtons[index]
             let card = game.cards[index]
             if card.isFaceUp {
-                button.setTitle(emoji(for: card), for: UIControlState.normal)
+                button.setTitle(emoji(for: card), for: UIControl.State.normal)
                 button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
             } else {
-                button.setTitle("", for: UIControlState.normal)
+                button.setTitle("", for: UIControl.State.normal)
                 button.backgroundColor = card.isMatched ? #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 0) : #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
             }
         }
@@ -104,9 +104,7 @@ class ViewController: UIViewController {
 
     func emoji(for card: Card) -> String {
         if emoji[card.identifier] == nil, emojiChoices.count > 0 {
-            let randomIndex = Int(arc4random_uniform(UInt32(emojiChoices.count)))
-            emoji[card.identifier] = emojiChoices.remove(at: randomIndex)
-            
+            emoji[card.identifier] = emojiChoices.remove(at: emojiChoices.count.arc4random)
         }
         print("\(card.identifier) : \(emoji[card.identifier]!)")
         return emoji[card.identifier] ?? "?"
@@ -117,14 +115,21 @@ class ViewController: UIViewController {
     func flipCard(withEmoji emoji: String, on button: UIButton){
         print("flipCard(withEmoji: \(emoji))")
         if button.currentTitle == emoji {
-            button.setTitle("", for: UIControlState.normal)
+            button.setTitle("", for: UIControl.State.normal)
             button.backgroundColor = #colorLiteral(red: 1, green: 0.5763723254, blue: 0, alpha: 1)
         } else {
-            button.setTitle(emoji, for: UIControlState.normal)
+            button.setTitle(emoji, for: UIControl.State.normal)
             button.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         }
         flipCount += 1
 
+    }
+}
+
+
+extension Int {
+    var arc4random : Int {
+        return Int((arc4random_uniform(UInt32(self))))
     }
 }
 
